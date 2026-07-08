@@ -68,7 +68,7 @@
       font-size: 48px;
       font-weight: 400;
       line-height: 1.05;
-      margin-bottom: 10px
+      margin-bottom: 10px;
     }
 
     .sub {
@@ -310,6 +310,56 @@
     .sum-val {
       font-family: 'DM Serif Display', serif;
       font-size: 20px
+    }
+
+    /* --- MOBILE RESPONSIVE STYLES --- */
+    @media (max-width: 650px) {
+      header {
+        padding: 32px 20px 24px;
+      }
+      
+      main {
+        padding: 24px 20px 60px;
+      }
+      
+      h1 {
+        font-size: 36px;
+      }
+      
+      .controls {
+        /* Stacks the 3 control cards vertically on small screens */
+        grid-template-columns: 1fr;
+      }
+      
+      .step-row {
+        padding: 14px;
+        gap: 8px;
+      }
+      
+      /* Reformats the bottom summary into a 2x2 grid instead of a single squished line */
+      .summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px 0;
+      }
+      
+      .sum-cell {
+        border-right: none;
+        padding-right: 0;
+      }
+      
+      .sum-cell:not(:first-child) {
+        padding-left: 0;
+      }
+      
+      /* Adds the divider line between the left and right columns of the 2x2 grid */
+      .sum-cell:nth-child(odd) {
+        border-right: 1px solid var(--border);
+      }
+      
+      .sum-cell:nth-child(even) {
+        padding-left: 20px;
+      }
     }
   </style>
 </head>
