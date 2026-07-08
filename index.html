@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap"
+    rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #181512;
+      color: #EDE8DF;
+      min-height: 100vh
+    }
+
+    :root {
+      --gold: #C4922A;
+      --sage: #6B9B84;
+      --bg1: #211E1A;
+      --bg2: #2A2520;
+      --muted: #7A7570;
+      --border: #2A2520
+    }
+
+    .mono {
+      font-family: 'DM Mono', monospace
+    }
+
+    .serif {
+      font-family: 'DM Serif Display', serif
+    }
+
+    .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 44px 40px 32px;
+      max-width: 740px;
+      margin: 0 auto
+    }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .14em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 10px
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1.05;
+      margin-bottom: 10px
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65
+    }
+
+    main {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 32px 40px 80px
+    }
+
+    .card {
+      background: var(--bg1);
+      border-radius: 12px;
+      padding: 22px
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 164px 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px
+    }
+
+    .water-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--bg2);
+      border-radius: 6px;
+      padding: 2px 8px;
+      margin-bottom: 10px;
+    }
+
+    .water-input {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      background: transparent;
+      border: none;
+      color: #EDE8DF;
+      width: 100%;
+      text-align: center;
+      outline: none;
+    }
+
+    .water-input::-webkit-outer-spin-button,
+    .water-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .water-input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    .water-input-unit {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .step-note {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .opt-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      padding: 8px 12px;
+      cursor: pointer;
+      text-align: left;
+      margin-bottom: 6px;
+      transition: all .15s
+    }
+
+    .opt-btn:last-child {
+      margin-bottom: 0
+    }
+
+    .opt-btn.active-gold {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #181512;
+      font-weight: 500
+    }
+
+    .opt-btn.active-sage {
+      background: var(--sage);
+      border-color: var(--sage);
+      color: #181512;
+      font-weight: 500
+    }
+
+    .rhythm-bars {
+      display: flex;
+      gap: 6px;
+      align-items: flex-end;
+      height: 80px;
+      margin-bottom: 10px
+    }
+
+    .bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px
+    }
+
+    .bar {
+      width: 100%;
+      border-radius: 3px 3px 0 0;
+      transition: height .35s cubic-bezier(.4, 0, .2, 1), opacity .2s
+    }
+
+    .bar-ml {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--muted)
+    }
+
+    .legend {
+      display: flex;
+      gap: 20px;
+      margin-top: 4px
+    }
+
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .leg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      display: inline-block
+    }
+
+    .steps-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .13em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin: 0 0 10px
+    }
+
+    .step-row {
+      background: var(--bg1);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 6px;
+      border-left: 3px solid transparent;
+      transition: border-color .2s
+    }
+
+    .step-title {
+      font-weight: 500;
+      font-size: 14px;
+      margin-bottom: 2px
+    }
+
+    .step-sub {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .step-water {
+      font-family: 'DM Mono', monospace;
+      font-size: 18px;
+      margin-right: 4px
+    }
+
+    .step-water-unit {
+      font-size: 10px;
+      color: var(--muted)
+    }
+
+    .timer-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      padding: 7px 14px;
+      cursor: pointer;
+      min-width: 62px;
+      transition: all .15s
+    }
+
+    .summary {
+      background: var(--bg1);
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      margin-top: 20px
+    }
+
+    .sum-cell {
+      flex: 1;
+      padding-right: 20px;
+      border-right: 1px solid var(--border)
+    }
+
+    .sum-cell:last-child {
+      border-right: none;
+      padding-right: 0
+    }
+
+    .sum-cell:not(:first-child) {
+      padding-left: 20px
+    }
+
+    .sum-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .13em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 4px
+    }
+
+    .sum-val {
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <p class="eyebrow">Tetsu Kasuya · World Brewers Cup 2016</p>
+    <h1 id="main-title">The 4:6 Method</h1>
+    <p class="sub" id="main-sub">A V60 pour-over technique with two independent controls — flavor in the first 40%, strength in the last 60%.</p>
+  </header>
+  <main>
+    <div class="controls">
+      <div class="card">
+        <p class="label" id="lbl-water">Water Volume</p>
+        <div class="water-input-wrapper">
+          <input type="number" class="water-input" id="water-val" value="300" oninput="updateWater(this.value)" min="0" max="3000" />
+          <span class="water-input-unit">ml</span>
+        </div>
+        <p class="step-note" id="coffee-note">20g coffee</p>
+      </div>
+      <div class="card">
+        <p class="label" id="lbl-flavor">Flavor profile</p>
+        <button class="opt-btn" id="taste-acidic" onclick="setTaste('acidic')">Bright & acidic</button>
+        <button class="opt-btn active-gold" id="taste-balanced" onclick="setTaste('balanced')">Balanced</button>
+        <button class="opt-btn" id="taste-sweet" onclick="setTaste('sweet')">Sweet</button>
+      </div>
+      <div class="card">
+        <p class="label" id="lbl-body">Body</p>
+        <button class="opt-btn" id="body-light" onclick="setBody('light')">Light body</button>
+        <button class="opt-btn active-sage" id="body-standard" onclick="setBody('standard')">Standard</button>
+        <button class="opt-btn" id="body-full" onclick="setBody('full')">Full body</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <p class="label" id="lbl-rhythm">Pour rhythm</p>
+      <div class="rhythm-bars" id="rhythm-bars"></div>
+      <div class="legend">
+        <span class="leg" id="leg-flavor"><span class="leg-dot" style="background:var(--gold)"></span>Flavor (40%)</span>
+        <span class="leg" id="leg-strength"><span class="leg-dot" style="background:var(--sage)"></span>Strength (60%)</span>
+      </div>
+    </div>
+
+    <p class="steps-label" id="lbl-steps">Brew steps · 93°C water · wait 45s between each pour</p>
+    <div id="steps-list"></div>
+
+    <div class="summary" id="summary"></div>
+  </main>
+
+  <script>
+    // --- Internationalization Configuration ---
+    const LANGUAGES = {
+      en: {
+        title: "The 4:6 Method",
+        sub: "A V60 pour-over technique with two independent controls — flavor in the first 40%, strength in the last 60%.",
+        waterVolume: "Water Volume",
+        coffeeUnit: "coffee",
+        flavorProfile: "Flavor profile",
+        brightAcidic: "Bright & acidic",
+        balanced: "Balanced",
+        sweet: "Sweet",
+        body: "Body",
+        lightBody: "Light body",
+        standard: "Standard",
+        fullBody: "Full body",
+        pourRhythm: "Pour rhythm",
+        flavor40: "Flavor (40%)",
+        strength60: "Strength (60%)",
+        brewSteps: "Brew steps · 93°C water · wait 45s between each pour",
+        coffee: "Coffee",
+        water: "Water",
+        pours: "Pours",
+        temp: "Temp",
+        done: "done",
+        pourLabel: (n) => `Pour ${n}`,
+        subBloom: "Flavor phase · bloom",
+        subComplete: "Flavor phase · complete",
+        subStrength: (curr, total) => {
+          if (curr === 1) return "Strength phase · start";
+          if (curr === total) return "Strength phase · finish";
+          return `Strength phase · ${curr} of ${total}`;
+        }
+      },
+      es: {
+        title: "El Método 4:6",
+        sub: "Una técnica de pour-over V60 con dos controles independientes: sabor en el primer 40%, intensidad en el último 60%.",
+        waterVolume: "Volumen de agua",
+        coffeeUnit: "de café",
+        flavorProfile: "Perfil de sabor",
+        brightAcidic: "Brillante y ácido",
+        balanced: "Balanceado",
+        sweet: "Dulce",
+        body: "Cuerpo",
+        lightBody: "Cuerpo ligero",
+        standard: "Estándar",
+        fullBody: "Cuerpo completo",
+        pourRhythm: "Ritmo de vertido",
+        flavor40: "Sabor (40%)",
+        strength60: "Intensidad (60%)",
+        brewSteps: "Pasos de preparación · Agua a 93°C · Esperar 45s entre vertidos",
+        coffee: "Café",
+        water: "Agua",
+        pours: "Vertidos",
+        temp: "Temp",
+        done: "listo",
+        pourLabel: (n) => `Vertido ${n}`,
+        subBloom: "Fase de sabor · preinfusión (bloom)",
+        subComplete: "Fase de sabor · completado",
+        subStrength: (curr, total) => {
+          if (curr === 1) return "Fase de intensidad · inicio";
+          if (curr === total) return "Fase de intensidad · fin";
+          return `Fase de intensidad · ${curr} de ${total}`;
+        }
+      },
+      pt: {
+        title: "O Método 4:6",
+        sub: "Uma técnica de extração na V60 com dois controles independentes — sabor nos primeiros 40%, intensidade nos últimos 60%.",
+        waterVolume: "Volume de Água",
+        coffeeUnit: "de café",
+        flavorProfile: "Perfil de sabor",
+        brightAcidic: "Brilhante & ácido",
+        balanced: "Equilibrado",
+        sweet: "Doce",
+        body: "Corpo",
+        lightBody: "Corpo leve",
+        standard: "Padrão",
+        fullBody: "Corpo denso",
+        pourRhythm: "Ritmo dos despejos",
+        flavor40: "Sabor (40%)",
+        strength60: "Intensidade (60%)",
+        brewSteps: "Passos do preparo · Água a 93°C · Aguarde 45s entre cada despejo",
+        coffee: "Café",
+        water: "Água",
+        pours: "Despejos",
+        temp: "Temp.",
+        done: "pronto",
+        pourLabel: (n) => `Despejo ${n}`,
+        subBloom: "Fase de sabor · pré-infusão (bloom)",
+        subComplete: "Fase de sabor · finalização",
+        subStrength: (curr, total) => {
+          if (curr === 1) return "Fase de intensidade · início";
+          if (curr === total) return "Fase de intensidade · fim";
+          return `Fase de intensidade · ${curr} de ${total}`;
+        }
+      },
+      ja: {
+        title: "4:6メソッド",
+        sub: "2つの独立したコントロールを備えたV60プアオーバー技術 — 最初の40%で味わい、最後の60%で濃度を調整します。",
+        waterVolume: "湯量",
+        coffeeUnit: "コーヒー粉",
+        flavorProfile: "味覚プロファイル",
+        brightAcidic: "明るい酸味",
+        balanced: "バランス",
+        sweet: "甘み重視",
+        body: "ボディー（コク）",
+        lightBody: "ライトボディ",
+        standard: "標準",
+        fullBody: "フルボディ",
+        pourRhythm: "注ぎのリズム",
+        flavor40: "味わい (40%)",
+        strength60: "濃度 (60%)",
+        brewSteps: "抽出手順 · 93°Cのお湯 · 各注ぎの間に45秒待機",
+        coffee: "コーヒー粉",
+        water: "総湯量",
+        pours: "注ぎ回数",
+        temp: "温度",
+        done: "完了",
+        pourLabel: (n) => `${n}投目`,
+        subBloom: "味わいフェーズ · 蒸らし (ブルーム)",
+        subComplete: "味わいフェーズ · 完了",
+        subStrength: (curr, total) => {
+          if (curr === 1) return "濃度フェーズ · 開始";
+          if (curr === total) return "濃度フェーズ · 終了";
+          return `濃度フェーズ · ${curr} / ${total}`;
+        }
+      }
+    };
+
+    // Detect browser language (matches 'pt-BR' or 'pt-PT' down to 'pt')
+    const browserLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+    const lang = LANGUAGES[browserLang] ? LANGUAGES[browserLang] : LANGUAGES['en'];
+
+    // --- Core Application Logic ---
+    let totalWater = 300;
+    let taste = 'balanced';
+    let body = 'standard';
+    let activeStep = null;
+    let timerInterval = null;
+    let timeLeft = 45;
+
+    const TASTE = {
+      acidic: { p1: 1 / 3, p2: 2 / 3 },
+      balanced: { p1: 1 / 2, p2: 1 / 2 },
+      sweet: { p1: 2 / 3, p2: 1 / 3 },
+    };
+    const BODY = {
+      light: { pours: 4 },
+      standard: { pours: 3 },
+      full: { pours: 2 },
+    };
+
+    function applyStaticTranslations() {
+      document.getElementById('main-title').textContent = lang.title;
+      document.getElementById('main-sub').textContent = lang.sub;
+      document.getElementById('lbl-water').textContent = lang.waterVolume;
+      document.getElementById('lbl-flavor').textContent = lang.flavorProfile;
+      document.getElementById('taste-acidic').textContent = lang.brightAcidic;
+      document.getElementById('taste-balanced').textContent = lang.balanced;
+      document.getElementById('taste-sweet').textContent = lang.sweet;
+      document.getElementById('lbl-body').textContent = lang.body;
+      document.getElementById('body-light').textContent = lang.lightBody;
+      document.getElementById('body-standard').textContent = lang.standard;
+      document.getElementById('body-full').textContent = lang.fullBody;
+      document.getElementById('lbl-rhythm').textContent = lang.pourRhythm;
+      
+      document.getElementById('leg-flavor').innerHTML = `<span class="leg-dot" style="background:var(--gold)"></span>${lang.flavor40}`;
+      document.getElementById('leg-strength').innerHTML = `<span class="leg-dot" style="background:var(--sage)"></span>${lang.strength60}`;
+      
+      document.getElementById('lbl-steps').textContent = lang.brewSteps;
+    }
+
+    function compute() {
+      const coffee = Math.round(totalWater / 15);
+      const total = totalWater;
+      const p1total = total * 0.4;
+      const p2total = total * 0.6;
+      const tp = TASTE[taste];
+      const bp = BODY[body];
+      const pour1 = Math.round(p1total * tp.p1);
+      const pour2 = Math.round(p1total * tp.p2);
+      const p2size = Math.round(p2total / bp.pours);
+      
+      const steps = [
+        { id: 0, label: lang.pourLabel(1), sub: lang.subBloom, water: pour1, phase: 1 },
+        { id: 1, label: lang.pourLabel(2), sub: lang.subComplete, water: pour2, phase: 1 },
+        ...Array.from({ length: bp.pours }, (_, i) => ({
+          id: i + 2,
+          label: lang.pourLabel(i + 3),
+          sub: lang.subStrength(i + 1, bp.pours),
+          water: p2size,
+          phase: 2,
+        })),
+      ];
+      return { coffee, total, steps };
+    }
+
+    function updateWater(val) {
+      totalWater = Math.max(0, parseInt(val) || 0);
+      render();
+    }
+    function setTaste(t) { taste = t; render(); }
+    function setBody(b) { body = b; render(); }
+
+    function startTimer(stepId) {
+      if (timerInterval) clearInterval(timerInterval);
+      activeStep = stepId;
+      timeLeft = 45;
+      renderSteps(compute().steps);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        const btn = document.getElementById('timer-btn-' + stepId);
+        if (btn) btn.textContent = timeLeft + 's';
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          if (btn) { 
+            btn.textContent = '✓ ' + lang.done; 
+            btn.style.color = 'var(--sage)'; 
+          }
+        }
+      }, 1000);
+    }
+
+    function renderSteps(steps) {
+      const list = document.getElementById('steps-list');
+      list.innerHTML = '';
+      steps.forEach(step => {
+        const color = step.phase === 1 ? 'var(--gold)' : 'var(--sage)';
+        const isActive = activeStep === step.id;
+        const div = document.createElement('div');
+        div.className = 'step-row';
+        div.style.borderLeftColor = isActive ? color : color.replace(')', ',0.35)').replace('var(', 'rgba(').replace('--gold', '196,146,42').replace('--sage', '107,155,132');
+        div.innerHTML = `
+      <div style="flex:1">
+        <div class="step-title">${step.label}</div>
+        <div class="step-sub">${step.sub}</div>
+      </div>
+      <span class="step-water" style="color:${color}">${step.water}<span class="step-water-unit">ml</span></span>
+      <button id="timer-btn-${step.id}" class="timer-btn"
+        style="color:${color};border-color:${color}44"
+        onclick="startTimer(${step.id})">↳ 45s</button>
+    `;
+        if (isActive && timerInterval) {
+          const btn = div.querySelector('.timer-btn');
+          btn.textContent = timeLeft + 's';
+          btn.style.background = color + '22';
+        }
+        list.appendChild(div);
+      });
+    }
+
+    function render() {
+      const { coffee, total, steps } = compute();
+      const maxW = Math.max(...steps.map(s => s.water)) || 1;
+
+      document.getElementById('coffee-note').textContent = `${coffee}g ${lang.coffeeUnit}`;
+
+      ['acidic', 'balanced', 'sweet'].forEach(k => {
+        const el = document.getElementById('taste-' + k);
+        el.className = 'opt-btn' + (taste === k ? ' active-gold' : '');
+      });
+      ['light', 'standard', 'full'].forEach(k => {
+        const el = document.getElementById('body-' + k);
+        el.className = 'opt-btn' + (body === k ? ' active-sage' : '');
+      });
+
+      const bars = document.getElementById('rhythm-bars');
+      bars.innerHTML = '';
+      steps.forEach(step => {
+        const h = Math.max(8, Math.round((step.water / maxW) * 64));
+        const color = step.phase === 1 ? '#C4922A' : '#6B9B84';
+        bars.innerHTML += `<div class="bar-wrap">
+      <div class="bar" style="height:${h}px;background:${color};opacity:${activeStep === step.id ? 1 : 0.72}"></div>
+      <span class="bar-ml">${step.water}</span>
+    </div>`;
+      });
+
+      renderSteps(steps);
+
+      document.getElementById('summary').innerHTML = [
+        [lang.coffee, coffee + 'g'],
+        [lang.water, total + 'ml'],
+        [lang.pours, steps.length],
+        [lang.temp, '93°C'],
+      ].map(([l, v]) => `<div class="sum-cell"><p class="sum-label">${l}</p><p class="sum-val">${v}</p></div>`).join('');
+    }
+
+    // Initialize layout with the chosen language and calculate first view
+    applyStaticTranslations();
+    render();
+  </script>
+</body>
+
+</html>
