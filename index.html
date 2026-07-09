@@ -256,7 +256,6 @@
     .step-water {
       font-family: 'DM Mono', monospace;
       font-size: 18px;
-      margin-right: 4px
     }
 
     .step-water-unit {
@@ -551,18 +550,16 @@
     let timerInterval = null;
     let timeLeft = 30;
 
-    // Updated fractions based on 120ml (40% of 300ml)
     const TASTE = {
-      acidic: { p1: 2 / 3, p2: 1 / 3 }, // 80ml then 40ml
-      balanced: { p1: 1 / 2, p2: 1 / 2 }, // 60ml then 60ml
-      sweet: { p1: 1 / 3, p2: 2 / 3 }, // 40ml then 80ml
+      acidic: { p1: 2 / 3, p2: 1 / 3 },
+      balanced: { p1: 1 / 2, p2: 1 / 2 },
+      sweet: { p1: 1 / 3, p2: 2 / 3 },
     };
-    
-    // Updated pours based on 180ml (60% of 300ml)
+
     const BODY = {
-      light: { pours: 1 }, // 1 pour of 180ml
-      standard: { pours: 2 }, // 2 pours of 90ml
-      full: { pours: 3 }, // 3 pours of 60ml
+      light: { pours: 1 },
+      standard: { pours: 2 },
+      full: { pours: 3 },
     };
 
     function applyStaticTranslations() {
@@ -596,17 +593,34 @@
       const pour2 = Math.round(p1total * tp.p2);
       const p2size = Math.round(p2total / bp.pours);
 
-      const steps = [
-        { id: 0, label: lang.pourLabel(1), sub: lang.subBloom, water: pour1, phase: 1 },
-        { id: 1, label: lang.pourLabel(2), sub: lang.subComplete, water: pour2, phase: 1 },
+      const rawSteps = [
+        { label: lang.pourLabel(1), sub: lang.subBloom, water: pour1, phase: 1 },
+        { label: lang.pourLabel(2), sub: lang.subComplete, water: pour2, phase: 1 },
         ...Array.from({ length: bp.pours }, (_, i) => ({
-          id: i + 2,
           label: lang.pourLabel(i + 3),
           sub: lang.subStrength(i + 1, bp.pours),
           water: p2size,
           phase: 2,
         })),
       ];
+
+      // Generate progressive accumulation targets
+      let currentSum = 0;
+      const steps = rawSteps.map((step, i) => {
+        currentSum += step.water;
+        // Fix rounding edge cases on final pass to target perfectly
+        if (i === rawSteps.length - 1) {
+          const diff = total - currentSum;
+          step.water += diff;
+          currentSum = total;
+        }
+        return {
+          id: i,
+          ...step,
+          cumulative: currentSum
+        };
+      });
+
       return { coffee, total, steps };
     }
 
@@ -620,7 +634,7 @@
     function startTimer(stepId) {
       if (timerInterval) clearInterval(timerInterval);
       activeStep = stepId;
-      timeLeft = 30; // Updated from 45 to 30
+      timeLeft = 30;
       renderSteps(compute().steps);
       timerInterval = setInterval(() => {
         timeLeft--;
@@ -651,7 +665,10 @@
         <div class="step-title">${step.label}</div>
         <div class="step-sub">${step.sub}</div>
       </div>
-      <span class="step-water" style="color:${color}">${step.water}<span class="step-water-unit">ml</span></span>
+      <div style="text-align: right; margin-right: 12px; min-width: 75px;">
+        <span class="step-water" style="color:${color}; display: block;">+${step.water}<span class="step-water-unit">ml</span></span>
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 1px;">➔ ${step.cumulative}ml</div>
+      </div>
       <button id="timer-btn-${step.id}" class="timer-btn"
         style="color:${color};border-color:${color}44"
         onclick="startTimer(${step.id})">↳ 30s</button>
