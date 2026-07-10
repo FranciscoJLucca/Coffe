@@ -5,11 +5,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
+  <!-- Metadados para WebApp / PWA -->
   <meta name="theme-color" content="#181512" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Método 4:6" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link class="apple-touch-icon" href="icon-192.png" />
   <link rel="manifest" href="manifest.json" />
 
   <link
@@ -440,7 +441,7 @@
         coffee: "Coffee",
         water: "Water",
         pours: "Pours",
-        temp: "Temp",
+        totalTime: "Total Time",
         done: "done",
         pourLabel: (n) => `Pour ${n}`,
         subBloom: "Flavor phase · bloom",
@@ -471,7 +472,7 @@
         coffee: "Café",
         water: "Agua",
         pours: "Vertidos",
-        temp: "Temp",
+        totalTime: "Tiempo Total",
         done: "listo",
         pourLabel: (n) => `Vertido ${n}`,
         subBloom: "Fase de sabor · preinfusión (bloom)",
@@ -502,7 +503,7 @@
         coffee: "Café",
         water: "Água",
         pours: "Despejos",
-        temp: "Temp.",
+        totalTime: "Tempo Total",
         done: "pronto",
         pourLabel: (n) => `Despejo ${n}`,
         subBloom: "Fase de sabor · pré-infusão (bloom)",
@@ -533,7 +534,7 @@
         coffee: "コーヒー粉",
         water: "総湯量",
         pours: "注ぎ回数",
-        temp: "温度",
+        totalTime: "総時間",
         done: "完了",
         pourLabel: (n) => `${n}投目`,
         subBloom: "味わいフェーズ · 蒸らし (ブルーム)",
@@ -567,6 +568,13 @@
       standard: { pours: 2 },
       full: { pours: 3 },
     };
+
+    // Helper para formatar segundos em mm:ss
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
 
     function applyStaticTranslations() {
       document.getElementById('main-title').textContent = lang.title;
@@ -609,6 +617,8 @@
       ];
 
       let currentSum = 0;
+      let currentTime = 0; // Acumulador de tempo em segundos
+
       const steps = rawSteps.map((step, i) => {
         currentSum += step.water;
         if (i === rawSteps.length - 1) {
@@ -616,7 +626,16 @@
           step.water += diff;
           currentSum = total;
         }
-        return { id: i, ...step, cumulative: currentSum };
+        
+        const stepTimeMark = currentTime;
+        currentTime += 30; // Cada etapa/espera adiciona 30 segundos
+
+        return { 
+          id: i, 
+          ...step, 
+          cumulative: currentSum, 
+          timeMark: stepTimeMark 
+        };
       });
 
       return { coffee, total, steps };
@@ -663,9 +682,12 @@
             <div class="step-title">${step.label}</div>
             <div class="step-sub">${step.sub}</div>
           </div>
-          <div style="text-align: right; margin-right: 12px; min-width: 75px;">
+          <div style="text-align: right; margin-right: 12px; min-width: 85px;">
             <span class="step-water" style="color:${color}; display: block;">+${step.water}<span class="step-water-unit">ml</span></span>
-            <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 1px;">➔ ${step.cumulative}ml</div>
+            <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.4;">
+              ➔ ${step.cumulative}ml<br>
+              ⏱ ${formatTime(step.timeMark)}
+            </div>
           </div>
           <button id="timer-btn-${step.id}" class="timer-btn"
             style="color:${color};border-color:${color}44"
@@ -708,11 +730,14 @@
 
       renderSteps(steps);
 
+      // Total de tempo estimado é baseado na quantidade de etapas × 30 segundos
+      const totalEstimatedTime = steps.length * 30;
+
       document.getElementById('summary').innerHTML = [
         [lang.coffee, coffee + 'g'],
         [lang.water, total + 'ml'],
         [lang.pours, steps.length],
-        [lang.temp, '93°C'],
+        [lang.totalTime, formatTime(totalEstimatedTime)],
       ].map(([l, v]) => `<div class="sum-cell"><p class="sum-label">${l}</p><p class="sum-val">${v}</p></div>`).join('');
     }
 
@@ -722,14 +747,12 @@
     // --- Registro Avançado do Service Worker Inline ---
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        // Criando um Service Worker básico dinamicamente via Data URI para manter o app auto-contido
         const swCode = `
           const CACHE_NAME = 'v6-46-cache';
           self.addEventListener('install', e => {
             self.skipWaiting();
           });
           self.addEventListener('fetch', e => {
-            // Estratégia Network-first com fallback para cache genérico para garantir funcionamento offline
             e.respondWith(
               fetch(e.request).catch(() => caches.match(e.request))
             );
