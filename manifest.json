@@ -1,6 +1,6 @@
 {
   "name": "The 4:6 Method Coffee Timer",
-  "short_name": "4:6 coffee recipe",
+  "short_name": "Coffee recipe calculator",
   "description": "Calculator for 4:6 coffee recipe from Tetsu Kasuya",
   "start_url": "./index.html",
   "display": "standalone",
