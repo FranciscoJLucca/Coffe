@@ -1,0 +1,23 @@
+{
+  "name": "The 4:6 Method Coffee Timer",
+  "short_name": "4:6 coffee recipe",
+  "description": "Calculator for 4:6 coffee recipe from Tetsu Kasuya",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#181512",
+  "theme_color": "#181512",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -4,6 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <meta name="theme-color" content="#181512" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Método 4:6" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="manifest" href="manifest.json" />
+
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap"
     rel="stylesheet" />
@@ -538,11 +546,9 @@
       }
     };
 
-    // Detect browser language (matches 'pt-BR' or 'pt-PT' down to 'pt')
     const browserLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
     const lang = LANGUAGES[browserLang] ? LANGUAGES[browserLang] : LANGUAGES['en'];
 
-    // --- Core Application Logic ---
     let totalWater = 300;
     let taste = 'balanced';
     let body = 'standard';
@@ -575,10 +581,8 @@
       document.getElementById('body-standard').textContent = lang.standard;
       document.getElementById('body-full').textContent = lang.fullBody;
       document.getElementById('lbl-rhythm').textContent = lang.pourRhythm;
-
       document.getElementById('leg-flavor').innerHTML = `<span class="leg-dot" style="background:var(--gold)"></span>${lang.flavor40}`;
       document.getElementById('leg-strength').innerHTML = `<span class="leg-dot" style="background:var(--sage)"></span>${lang.strength60}`;
-
       document.getElementById('lbl-steps').textContent = lang.brewSteps;
     }
 
@@ -604,21 +608,15 @@
         })),
       ];
 
-      // Generate progressive accumulation targets
       let currentSum = 0;
       const steps = rawSteps.map((step, i) => {
         currentSum += step.water;
-        // Fix rounding edge cases on final pass to target perfectly
         if (i === rawSteps.length - 1) {
           const diff = total - currentSum;
           step.water += diff;
           currentSum = total;
         }
-        return {
-          id: i,
-          ...step,
-          cumulative: currentSum
-        };
+        return { id: i, ...step, cumulative: currentSum };
       });
 
       return { coffee, total, steps };
@@ -661,18 +659,18 @@
         div.className = 'step-row';
         div.style.borderLeftColor = isActive ? color : color.replace(')', ',0.35)').replace('var(', 'rgba(').replace('--gold', '196,146,42').replace('--sage', '107,155,132');
         div.innerHTML = `
-      <div style="flex:1">
-        <div class="step-title">${step.label}</div>
-        <div class="step-sub">${step.sub}</div>
-      </div>
-      <div style="text-align: right; margin-right: 12px; min-width: 75px;">
-        <span class="step-water" style="color:${color}; display: block;">+${step.water}<span class="step-water-unit">ml</span></span>
-        <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 1px;">➔ ${step.cumulative}ml</div>
-      </div>
-      <button id="timer-btn-${step.id}" class="timer-btn"
-        style="color:${color};border-color:${color}44"
-        onclick="startTimer(${step.id})">↳ 30s</button>
-    `;
+          <div style="flex:1">
+            <div class="step-title">${step.label}</div>
+            <div class="step-sub">${step.sub}</div>
+          </div>
+          <div style="text-align: right; margin-right: 12px; min-width: 75px;">
+            <span class="step-water" style="color:${color}; display: block;">+${step.water}<span class="step-water-unit">ml</span></span>
+            <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 1px;">➔ ${step.cumulative}ml</div>
+          </div>
+          <button id="timer-btn-${step.id}" class="timer-btn"
+            style="color:${color};border-color:${color}44"
+            onclick="startTimer(${step.id})">↳ 30s</button>
+        `;
         if (isActive && timerInterval) {
           const btn = div.querySelector('.timer-btn');
           btn.textContent = timeLeft + 's';
@@ -703,9 +701,9 @@
         const h = Math.max(8, Math.round((step.water / maxW) * 64));
         const color = step.phase === 1 ? '#C4922A' : '#6B9B84';
         bars.innerHTML += `<div class="bar-wrap">
-      <div class="bar" style="height:${h}px;background:${color};opacity:${activeStep === step.id ? 1 : 0.72}"></div>
-      <span class="bar-ml">${step.water}</span>
-    </div>`;
+          <div class="bar" style="height:${h}px;background:${color};opacity:${activeStep === step.id ? 1 : 0.72}"></div>
+          <span class="bar-ml">${step.water}</span>
+        </div>`;
       });
 
       renderSteps(steps);
@@ -718,9 +716,33 @@
       ].map(([l, v]) => `<div class="sum-cell"><p class="sum-label">${l}</p><p class="sum-val">${v}</p></div>`).join('');
     }
 
-    // Initialize layout with the chosen language and calculate first view
     applyStaticTranslations();
     render();
+
+    // --- Registro Avançado do Service Worker Inline ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // Criando um Service Worker básico dinamicamente via Data URI para manter o app auto-contido
+        const swCode = `
+          const CACHE_NAME = 'v6-46-cache';
+          self.addEventListener('install', e => {
+            self.skipWaiting();
+          });
+          self.addEventListener('fetch', e => {
+            // Estratégia Network-first com fallback para cache genérico para garantir funcionamento offline
+            e.respondWith(
+              fetch(e.request).catch(() => caches.match(e.request))
+            );
+          });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        
+        navigator.serviceWorker.register(swUrl, { scope: './' })
+          .then(() => console.log('PWA Ativo com sucesso.'))
+          .catch(err => console.log('Erro ao registrar PWA:', err));
+      });
+    }
   </script>
 </body>
 
