@@ -1,0 +1,373 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #181512;
+  color: #EDE8DF;
+  min-height: 100vh;
+}
+
+:root {
+  --gold: #C4922A;
+  --sage: #6B9B84;
+  --bg1: #211E1A;
+  --bg2: #2A2520;
+  --muted: #7A7570;
+  --border: #2A2520;
+}
+
+.mono {
+  font-family: 'DM Mono', monospace;
+}
+
+.serif {
+  font-family: 'DM Serif Display', serif;
+}
+
+.label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 44px 40px 32px;
+  max-width: 740px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .14em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+main {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 32px 40px 80px;
+}
+
+/* Recipe Selector */
+.recipe-selector {
+  display: flex;
+  background: var(--bg1);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.recipe-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.recipe-tab.active {
+  background: var(--bg2);
+  color: #EDE8DF;
+  font-weight: 500;
+}
+
+.card {
+  background: var(--bg1);
+  border-radius: 12px;
+  padding: 22px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 164px 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.water-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--bg2);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-bottom: 10px;
+}
+
+.water-input {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  background: transparent;
+  border: none;
+  color: #EDE8DF;
+  width: 100%;
+  text-align: center;
+  outline: none;
+}
+
+.water-input::-webkit-outer-spin-button,
+.water-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.water-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.water-input-unit {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.step-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.opt-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 6px;
+  transition: all .15s;
+}
+
+.opt-btn:last-child {
+  margin-bottom: 0;
+}
+
+.opt-btn.active-gold {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #181512;
+  font-weight: 500;
+}
+
+.opt-btn.active-sage {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: #181512;
+  font-weight: 500;
+}
+
+.rhythm-bars {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+.bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.bar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  transition: height .35s cubic-bezier(.4, 0, .2, 1), opacity .2s;
+}
+
+.bar-ml {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.legend {
+  display: flex;
+  gap: 20px;
+  margin-top: 4px;
+}
+
+.leg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.leg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.steps-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .13em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.step-row {
+  background: var(--bg1);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 6px;
+  border-left: 3px solid transparent;
+  transition: border-color .2s;
+}
+
+.step-title {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.step-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.step-water {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+}
+
+.step-water-unit {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.timer-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  padding: 7px 14px;
+  cursor: pointer;
+  min-width: 62px;
+  transition: all .15s;
+}
+
+.summary {
+  background: var(--bg1);
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  margin-top: 20px;
+}
+
+.sum-cell {
+  flex: 1;
+  padding-right: 20px;
+  border-right: 1px solid var(--border);
+}
+
+.sum-cell:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.sum-cell:not(:first-child) {
+  padding-left: 20px;
+}
+
+.sum-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .13em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.sum-val {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+}
+
+/* --- MOBILE RESPONSIVE STYLES --- */
+@media (max-width: 650px) {
+  header {
+    padding: 32px 20px 24px;
+  }
+  main {
+    padding: 24px 20px 60px;
+  }
+  h1 {
+    font-size: 36px;
+  }
+  .controls {
+    grid-template-columns: 1fr;
+  }
+  .step-row {
+    padding: 14px;
+    gap: 8px;
+  }
+  .summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 0;
+  }
+  .sum-cell {
+    border-right: none;
+    padding-right: 0;
+  }
+  .sum-cell:not(:first-child) {
+    padding-left: 0;
+  }
+  .sum-cell:nth-child(odd) {
+    border-right: 1px solid var(--border);
+  }
+  .sum-cell:nth-child(even) {
+    padding-left: 20px;
+  }
+}
